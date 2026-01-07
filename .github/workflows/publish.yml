@@ -4,8 +4,8 @@ name: Publish to NPM
 on:
   push:
     branches:
-      - main # jab main branch me push ho
-  workflow_dispatch: # manual run button
+      - main # workflow run when main branch gets a push
+  workflow_dispatch: # manual run from Actions tab
 
 jobs:
   publish:
@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm install --verbose
 
-      # Step 4: Configure git for version bump
+      # Step 4: Configure Git for version bump
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
@@ -51,5 +51,5 @@ jobs:
         run: |
           # Dry-run first to test publish
           npm publish --access public --dry-run
-          # Uncomment below to actually publish
+          # Uncomment below line to actually publish
           # npm publish --access public
