@@ -1,0 +1,29 @@
+{
+  "name": "xa-create-react-tailwind-rtk",
+  "version": "1.0.1",
+  "description": "A CLI tool to create a Vite + React + Tailwind project instantly.",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "xa-create-react-tailwind": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "tailwind",
+    "cli",
+    "starter",
+    "generator"
+  ],
+  "author": "Junaid Tariq",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "execa": "^9.6.1",
+    "fs-extra": "^11.3.2",
+    "inquirer": "^12.11.0"
+  }
+}
