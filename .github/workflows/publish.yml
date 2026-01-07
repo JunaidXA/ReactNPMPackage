@@ -3,7 +3,7 @@ name: Auto Publish NPM Package
 on:
   push:
     branches:
-      - main # ya jo branch tum use karte ho
+      - main
 
 jobs:
   publish:
@@ -23,19 +23,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Configure Git for version bump
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump version, commit, and push tag
+      - name: Bump version and push tag
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          # Bump patch version
+          # Bump patch version and commit
           npm version patch -m "chore: bump version to %s [skip ci]"
-          # Push new tag back to GitHub
-          git push --follow-tags origin main
+          # Push commit + tags to GitHub
+          git push origin main --follow-tags
 
       - name: Publish to NPM
         env:
