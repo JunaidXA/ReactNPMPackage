@@ -1,55 +1,45 @@
-name: Publish to NPM
+name: Publish Package
 
-# Workflow triggers
 on:
   push:
     branches:
-      - main # workflow run when main branch gets a push
-  workflow_dispatch: # manual run from Actions tab
+      - main
+
+permissions:
+  contents: write
+  packages: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: publish-npm
     steps:
-      # Step 1: Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Step 2: Setup Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          node-version: "24"
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
 
-      # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install --verbose
+        run: npm ci
 
-      # Step 4: Configure Git for version bump
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Step 5: Bump version and push tag safely
-      - name: Bump version and push tag
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Bump version and push
         run: |
           npm version patch -m "chore: bump version to %s [skip ci]"
-          # Safe push using GitHub token
-          git push --follow-tags https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git push origin main --follow-tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 6: Publish to NPM
       - name: Publish to NPM
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          # Dry-run first to test publish
-          npm publish --access public --dry-run
-          # Uncomment below line to actually publish
-          # npm publish --access public
