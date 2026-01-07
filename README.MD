@@ -13,19 +13,19 @@ npm install -g xa-create-react-tailwind-rtk
 Create a new project:
 
 ```bash
-xa-create-react-tailwind-rtk myapp
+xa-create-react-tailwind-rtk MyApp
 ```
 
 This will:
 
-1. Copy the built-in template into `myapp` folder.
+1. Copy the built-in template into `MyApp` folder.
 2. Run `npm install` inside the new folder automatically.
 3. Print next steps to start the dev server.
 
 ## 🔧 Start
 
 ```bash
-cd myapp
+cd MyApp
 npm run dev
 ```
 
@@ -34,7 +34,7 @@ npm run dev
 You can run without global install using `npx` (if you published with the same name):
 
 ```bash
-npx xa-create-react-tailwind-rtk myapp
+npx xa-create-react-tailwind-rtk MyApp
 ```
 
 ## Notes
