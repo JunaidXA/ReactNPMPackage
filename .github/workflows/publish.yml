@@ -10,22 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
 
       - name: Install dependencies
         run: npm install
 
-      - name: Bump version and publish
+      - name: Bump version and commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          npm version patch -m "ci: bump version to %s"
+          git push
+
+      - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm version patch
-          npm publish --access public
+        run: npm publish --access public
