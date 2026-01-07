@@ -1,38 +1,43 @@
-name: Publish NPM Package
+name: Auto Publish NPM Package
 
 on:
   push:
     branches:
-      - main
+      - main # ya jo branch tum use karte ho
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          persist-credentials: true # important for pushing tags
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
 
-      - name: Bump version
+      - name: Configure Git for version bump
         run: |
-          npm version patch -m "ci: bump version to %s"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Push version commit & tag
+      - name: Bump version, commit, and push tag
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          git push origin main --follow-tags
+          # Bump patch version
+          npm version patch -m "chore: bump version to %s [skip ci]"
+          # Push new tag back to GitHub
+          git push --follow-tags origin main
 
-      - name: Publish to npm
+      - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public
