@@ -1,7 +1,7 @@
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: publish-npm # ye wahi environment name hona chahiye
+    environment: publish-npm
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
