@@ -1,19 +1,22 @@
 name: Publish to NPM
 
+# Workflow triggers
 on:
   push:
     branches:
       - main # jab main branch me push ho
-  workflow_dispatch: # manually run karne ke liye
+  workflow_dispatch: # manual run button
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     environment: publish-npm
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Step 2: Setup Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -21,22 +24,32 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: "npm"
 
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm install --verbose
 
-      - name: Configure Git for version bump
+      # Step 4: Configure git for version bump
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump version, commit, and push tag
+      # Step 5: Bump version and push tag safely
+      - name: Bump version and push tag
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm version patch -m "chore: bump version to %s [skip ci]"
-          git push --follow-tags origin main
+          # Safe push using GitHub token
+          git push --follow-tags https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
+      # Step 6: Publish to NPM
       - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: |
+          # Dry-run first to test publish
+          npm publish --access public --dry-run
+          # Uncomment below to actually publish
+          # npm publish --access public
