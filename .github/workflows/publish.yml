@@ -1,14 +1,7 @@
-name: Auto Publish NPM Package
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   publish:
     runs-on: ubuntu-latest
-
+    environment: publish-npm # ye wahi environment name hona chahiye
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,19 +16,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Configure Git
+      - name: Configure Git for version bump
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump version and push tag
+      - name: Bump version, commit, and push tag
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          # Bump patch version and commit
           npm version patch -m "chore: bump version to %s [skip ci]"
-          # Push commit + tags to GitHub
-          git push origin main --follow-tags
+          git push --follow-tags origin main
 
       - name: Publish to NPM
         env:
