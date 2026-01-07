@@ -1,6 +1,6 @@
 {
   "name": "xa-create-react-tailwind-rtk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A CLI tool to create a Vite + React + Tailwind project instantly.",
   "main": "index.js",
   "type": "module",
